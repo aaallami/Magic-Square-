@@ -1,0 +1,191 @@
+package hello;
+import java.util.Scanner;
+
+public class MagicSquare {
+	public static void odd(int[][] square){
+
+		int N = square.length;
+		/*int row = N-1;
+		int col = N/2;
+		magic[row][col] = 1;
+			for(int i = 2; i<=N*N; i++){
+				if(magic[(row+1)%N][(col+1)%N]== 0){
+					row = (row+1)%N;
+					col = (col+1)%N;
+				}else{
+					row = (row-1+N)%N;
+				}
+				magic[row][col] = i;
+			}*/
+		//int[][] magicSquare = new int[n][n];
+
+	    int number = 1;
+	    int row = 0;
+	    int column = N / 2;
+	    int curr_row;
+	    int curr_col;
+	    while (number <= N * N) {
+	    	square[row][column] = number;
+	        number++;
+	        curr_row = row;
+	        curr_col = column;
+	        row -= 1;
+	        column += 1;
+	        if (row == -1) {
+	            row = N - 1;
+	        }
+	        if (column == N) {
+	            column = 0;
+	        }
+	        if (square[row][column] != 0) {
+	            row = curr_row + 1;
+	            column = curr_col;
+	            if (row == -1) {
+	                row = N - 1;
+	            }
+	        }
+	    }
+		
+	}
+	public static void doublyEven(int[][] square){
+		int N = square.length;
+		
+		int miniSqrNum = N/4; //size of boxes
+		int cnt = 1; 	      //counter 1 to N*N
+		int invCnt = N*N;     //counter N*N to 1
+		for(int i=0;i<N;i++){
+
+			for(int j=0;j<N;j++){
+
+			   if(j>=miniSqrNum && j<N-miniSqrNum)
+			   {
+				if(i>=miniSqrNum && i<N-miniSqrNum)
+					square[i][j] = cnt;    //central box
+				else 
+					square[i][j] = invCnt; // up & down boxes8
+
+			   }
+			   else if(i<miniSqrNum || i>=N-miniSqrNum)
+			   {
+				   square[i][j]=cnt;	         // 4 corners
+			   }
+			   else
+				   square[i][j] = invCnt;  	// left & right boxes
+			   cnt++;
+			   invCnt--;
+			}
+		}
+	
+	}
+	public static void singlyEven(int[][] square){
+
+		int N = square.length;
+		int halfN = N/2; //size of ABCD boxes
+		int k = (N-2)/4; // to get 'noses' of A & D boxes
+	        int temp;
+
+	        int [] swapCol = new int[N]; // columns which need to swap between C-B & A-D
+	     	int index=0; // index of swapCol
+
+	        int [][] miniMagic =  new int [halfN][halfN];
+	  	odd(miniMagic);	//creating odd magic square for A box
+		
+		//creating 4 magic boxes
+	  	for (int i=0; i<halfN; i++)
+	    	   for (int j=0; j<halfN; j++){
+	    		   square[i][j] = miniMagic[i][j]; 	  		  //A box
+	    		   square[i+halfN][j+halfN] = miniMagic[i][j]+halfN*halfN;   //B box
+	    		   square[i][j+halfN] = miniMagic[i][j]+2*halfN*halfN;       //C box
+	    		   square[i+halfN][j] = miniMagic[i][j]+3*halfN*halfN;       //D box
+	           }
+
+	  
+	  
+	      for (int i=1; i<=k; i++)
+	        swapCol[index++] = i;
+
+	      for (int i=N-k+2; i<=N; i++)
+	        swapCol[index++] = i;
+
+	      //swaping values between C-B & A-D by known columns
+	      for (int i=1; i<=halfN; i++)
+	        for (int j=1; j<=index; j++){
+	          temp=square[i-1][swapCol[j-1]-1];
+	          square[i-1][swapCol[j-1]-1]=square[i+halfN-1][swapCol[j-1]-1];
+	          square[i+halfN-1][swapCol[j-1]-1]=temp;
+	        }
+
+	      //swaping noses
+	      temp=square[k][0]; 
+	      square[k][0]=square[k+halfN][0]; 
+	      square[k+halfN][0]=temp;
+
+
+	      temp=square[k+halfN][k]; 
+	      square[k+halfN][k]=square[k][k]; 
+	      square[k][k]=temp;
+	      //end of swaping
+
+	}
+	public void printmsq(int[][] magicsqr){
+		int N = magicsqr.length;
+		 for (int i = 0; i < N; i++) {
+	            for (int j = 0; j < N; j++) 
+	            	System.out.printf("%2d ", magicsqr [i][j]);
+	            
+	            System.out.println();
+	        }
+	}
+	/*public boolean isMagicSqr(int[][] magicsqr){
+		int N = magicsqr.length;
+		int magicConst = (N*N*N+N)/2;
+
+		int rowsum = 0;
+		int colsum = 0;
+		int diag1 = 0;
+		int diag2 = 0;
+		for(int i=0;i<N;i++){
+			for(int j=0;j<N;j++){
+				rowsum += magicsqr[i][j];
+				colsum += magicsqr[j][i];
+			}
+			diag1 += magicsqr[i][i];
+			diag2 += magicsqr[i][N-i-1];
+			if(rowsum!=magicConst){ return false; }
+			if(colsum!=magicConst){ return false; }
+			rowsum=0; colsum=0;
+		}
+		if(diag1!= magicConst || diag2 != magicConst) 
+		return false;
+		
+		System.out.println("Row sum = Coulmn Sum = Diagonal Sum = "+magicConst);
+		return true;
+	}*/
+	public static void main(String[] args) { 
+
+		Scanner input = new Scanner(System.in);
+		System.out.println("Please enter the size of the square");
+		int size = input.nextInt();
+		int[][] squar = new int[size][size];
+	        MagicSquare ms = new MagicSquare();
+
+		   if(size<=2) throw new RuntimeException("Matrix size must be greater than 2");
+	        
+		   if (size % 2==1) 
+			   ms.odd(squar);
+			   
+		   else if(size%4 ==0) 
+			doublyEven(squar);	   
+	           else 
+			singlyEven(squar);
+
+		
+			ms.printmsq(squar);
+			/*if(ms.isMagicSqr(matrix)) 
+				System.out.println("Generated Square is a magic square"); 
+			else  
+				System.out.println("Generated Square is not a magic square"); */
+
+	    }
+	
+}
